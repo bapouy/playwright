@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { HelpSelectors, HelpTexts, HelpRoles } from "../page-objects/help";
 
 // Placeholder for the URL. You will replace this with the actual Amazon Help URL.
 const HELP_PAGE_URL =
@@ -13,7 +14,7 @@ test.describe("Test cases for 1.3", () => {
   test('Verify external link to "Your Orders"', async ({ page }) => {
     // Locate the link that directs to the customer's order history.
     const ordersLink = await page
-      .locator("a", { hasText: "Your Orders" })
+      .locator("a", { hasText: HelpTexts.YOUR_ORDERS })
       .first(); //Thre is an ID, but looks like dynamically generated so it may break on the next deployment despite it is not a best practice to use it
 
     await expect(ordersLink).toBeVisible();
@@ -29,7 +30,7 @@ test.describe("Test cases for 1.3", () => {
 
   test("Verify jump links (Table of Contents)", async ({ page }) => {
     const jumpLink = await page.locator("a", {
-      hasText: "Tracking your package",
+      hasText: HelpTexts.TRACKING_PACKAGE,
     });
     await expect(jumpLink).toBeVisible();
     await jumpLink.click();
@@ -40,8 +41,8 @@ test.describe("Test cases for 1.3", () => {
 
   test("Verify navigational sidebar links", async ({ page }) => {
     const sidebarLink = await page
-      .getByRole("listitem")
-      .filter({ hasText: "Returns & Refunds Exchange or" });
+      .getByRole(HelpRoles.LISTITEM)
+      .filter({ hasText: HelpTexts.RETURNS_REFUNDS });
 
     await expect(sidebarLink).toBeVisible();
 
@@ -50,7 +51,7 @@ test.describe("Test cases for 1.3", () => {
   });
 
   test("Verify search bar functionality", async ({ page }) => {
-    const searchInput = await page.locator("#helpsearch");
+    const searchInput = await page.locator(HelpSelectors.HELP_SEARCH_INPUT);
 
     const testQuery = "contact amazon";
 
@@ -58,7 +59,7 @@ test.describe("Test cases for 1.3", () => {
     await searchInput.fill(testQuery);
     await page.keyboard.press("Enter");
 
-    await expect(page.locator("#help-result-stats")).toContainText(
+    await expect(page.locator(HelpSelectors.HELP_RESULT_STATS)).toContainText(
       /\d+\s+search\s+results\s+for/ //s due to extra white spaces
     );
   });
@@ -66,14 +67,14 @@ test.describe("Test cases for 1.3", () => {
   test("CSC-002: Verify accuracy of Delivery Status definition (Shipped)", async ({
     page,
   }) => {
-    const shippedDefinition = await page.getByText("Arriving");
+    const shippedDefinition = await page.getByText(HelpTexts.ARRIVING);
     await expect(shippedDefinition).toBeVisible();
-    await expect(shippedDefinition).toContainText("Arriving"); // I know this is a usless test, but we have only a dynamically generated ID
+    await expect(shippedDefinition).toContainText(HelpTexts.ARRIVING); // I know this is a usless test, but we have only a dynamically generated ID
   });
 
   test("CSC-004: Verify link to external contact options", async ({ page }) => {
-    const contactLink = await page.getByRole("link", {
-      name: "contact a carrier",
+    const contactLink = await page.getByRole(HelpRoles.LINK, {
+      name: HelpTexts.CONTACT_CARRIER,
       exact: true,
     });
 
@@ -94,8 +95,8 @@ test.describe("Test cases for 1.3", () => {
 
     // Functional check: Ensure the left navigation disappears or collapses
     const leftNav = await page
-      .getByRole("listitem")
-      .filter({ hasText: "Your Orders Track or cancel" });
+      .getByRole(HelpRoles.LISTITEM)
+      .filter({ hasText: HelpTexts.YOUR_ORDERS_TRACK });
     // await expect(leftNav).not.toBeVisible(); not good responsiveness, there are no colapsing or disappearing elements
 
     await expect(leftNav).toBeVisible();
@@ -104,19 +105,17 @@ test.describe("Test cases for 1.3", () => {
   test("UXC-003: Verify the Feedback mechanism (Click No)", async ({
     page,
   }) => {
-    const feedbackNoButton = await page.getByRole("button", { name: "No" });
-    const feedbackYesButton = await page.getByRole("button", { name: "Yes" });
+    const feedbackNoButton = await page.getByRole(HelpRoles.BUTTON, { name: HelpTexts.FEEDBACK_NO });
+    const feedbackYesButton = await page.getByRole(HelpRoles.BUTTON, { name: HelpTexts.FEEDBACK_YES });
 
     await expect(feedbackNoButton).toBeVisible();
     await expect(feedbackYesButton).toBeVisible();
     await feedbackNoButton.click();
 
-    await page.click(
-      'input[type="radio"][name="info"][value="Confused By Information"]'
-    );
-    await page.getByRole("button", { name: "Submit" }).last().click();
+    await page.click(HelpSelectors.FEEDBACK_RADIO_CONFUSED);
+    await page.getByRole(HelpRoles.BUTTON, { name: HelpTexts.FEEDBACK_SUBMIT }).last().click();
 
-    const feedbackTahanks = await page.locator("#hmd-ConfirmNoBox");
+    const feedbackTahanks = await page.locator(HelpSelectors.FEEDBACK_THANKS_MESSAGE);
     await expect(feedbackTahanks).toBeVisible();
     await expect(feedbackTahanks).toHaveText(
       "Thanks! While we're unable to respond directly to your feedback, we'll use this information to improve our online Help."
@@ -125,13 +124,13 @@ test.describe("Test cases for 1.3", () => {
 
   test("UXC-004: Verify Recommended Help Topics", async ({ page }) => {
     const recommendedTopicsList = await page.getByText(
-      "Recommended Help Topics"
+      HelpTexts.RECOMMENDED_TOPICS
     );
 
     await expect(recommendedTopicsList).toBeVisible();
 
     const missingTrackingLink = await page
-      .getByRole("link", { name: "Missing Tracking Information" })
+      .getByRole(HelpRoles.LINK, { name: HelpTexts.MISSING_TRACKING })
       .first();
 
     await expect(missingTrackingLink).toBeVisible();
