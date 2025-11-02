@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import {
   validateOrdersLink,
   validateJumpLinks,
@@ -26,21 +26,21 @@ test.describe("Test cases for 1.3", () => {
     await page.goto(HELP_PAGE_URL);
   });
 
-  test('Verify external link to "Your Orders"', async ({ page }) => {
+  test('LNC-001: Verify external link to "Your Orders"', async ({ page }) => {
     await validateOrdersLink(page);
   });
 
-  test("Verify jump links (Table of Contents)", async ({ page }) => {
+  test("LNC-002: Verify jump links (Table of Contents)", async ({ page }) => {
     await validateJumpLinks(page);
   });
 
-  test("Verify navigational sidebar links", async ({ page }) => {
+  test("LNC-003: Verify navigational sidebar links", async ({ page }) => {
     await validateSidebarLinks(page);
     await clickSidebarLink(page);
     await validateSignInPageTitle(page); // Usually I would login by API in the beforeEach, and check the propper result, do not want to depend on UI login to avoid flakiness
   });
 
-  test("Verify search bar functionality", async ({ page }) => {
+  test("CSC-001: Verify search bar functionality", async ({ page }) => {
     await performSearch(page, "contact amazon");
     await validateSearchStatus(page);
   });
@@ -51,7 +51,7 @@ test.describe("Test cases for 1.3", () => {
     await validateArrivingStatusDefinition(page);
   });
 
-  test("CSC-004: Verify link to external contact options", async ({ page }) => {
+  test("CSC-003: Verify link to external contact options", async ({ page }) => {
     await validateContactLink(page);
     await clickContactLink(page);
   });
