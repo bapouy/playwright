@@ -58,27 +58,12 @@ export async function navigateToCustomerService(page: Page) {
   await expect(page).toHaveURL(/nav_cs_customerservice/);
 }
 
-export async function searchForItem(page: Page, item: string) {
-  await page.locator(HomeSelectors.SEARCH_INPUT).fill(item);
-  await page.keyboard.press("Enter");
-}
-
-export async function validateCustomerServicePageURL(page: Page) {
-  await expect(page).toHaveURL(/nav_cs_customerservice/);
-}
-
-export async function openSearchResults(page: Page, item: string) {
-  await page.getByText(item, { exact: true }).click();
-}
-
 export async function validateSignInPageURL(page: Page) {
   await expect(page).toHaveURL(/signin/);
 }
 
 export async function signIn(page: Page, email: string, password: string) {
-  await page
-    .locator(HomeSelectors.EMAIL_INPUT)
-    .fill(email);
+  await page.locator(HomeSelectors.EMAIL_INPUT).fill(email);
   await page.locator(HomeSelectors.CONTINUE_BUTTON).first().click();
   await page.locator(HomeSelectors.PASSWORD_INPUT).fill(password);
   await page.locator(HomeSelectors.SIGN_IN_SUBMIT).click();
