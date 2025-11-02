@@ -16,7 +16,6 @@ import {
   validateRecommendedTopics,
 } from "../page-objects/HelpPage";
 
-// Placeholder for the URL. You will replace this with the actual Amazon Help URL.
 const HELP_PAGE_URL =
   "https://www.amazon.com/gp/help/customer/display.html?nodeId=GENAFPTNLHV7ZACW";
 
