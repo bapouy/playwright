@@ -1,8 +1,8 @@
 import { test } from "@playwright/test";
 import {
   dismissToasterNotification,
+  navegateHome,
   navigateToCustomerService,
-  signIn,
   validateNavigationMenu,
   validateSignInPageURL,
 } from "../page-objects/HomePage";
@@ -15,8 +15,7 @@ import {
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-
-  await page.goto("https://www.amazon.com/");
+  await navegateHome(page);
 });
 
 test("Task 1", async ({ page }) => {
@@ -30,5 +29,4 @@ test("Task 1", async ({ page }) => {
   await openSearchResults(page, "Your Amazon orders");
 
   await validateSignInPageURL(page); //I would login by API in the beforeEach, and check the propper page, do not want to depend on UI login to avoid flakiness
-  await signIn(page, "email", "pass"); //I would use env variables for email and password to avoid hardcoding them
 });

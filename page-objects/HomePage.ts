@@ -10,15 +10,20 @@ export enum HomeSelectors {
   SEARCH_INPUT = "#twotabsearchtextbox",
 
   // Login/Sign in
-  EMAIL_INPUT = "#ap_email",
+  LOGIN_BUTTON = '[data-csa-c-content-id="nav_ya_signin"]',
+  EMAIL_INPUT = "#ap_email_login",
   CONTINUE_BUTTON = "#continue",
   PASSWORD_INPUT = "#ap_password",
   SIGN_IN_SUBMIT = "#signInSubmit",
 }
 
-export async function validateNavigationMenu(page: Page) {
-  await page.reload();
+export async function navegateHome(page: Page) {
+  await page.goto("https://amazon.com");
+  await page.reload(); //to avoid bug, somtimes the navegation bar does not load
+  await dismissToasterNotification(page);
+}
 
+export async function validateNavigationMenu(page: Page) {
   const expectedNavItems = [
     "Today's Deals",
     "Prime Video",
@@ -63,6 +68,7 @@ export async function validateSignInPageURL(page: Page) {
 }
 
 export async function signIn(page: Page, email: string, password: string) {
+  await page.locator(HomeSelectors.LOGIN_BUTTON).click();
   await page.locator(HomeSelectors.EMAIL_INPUT).fill(email);
   await page.locator(HomeSelectors.CONTINUE_BUTTON).first().click();
   await page.locator(HomeSelectors.PASSWORD_INPUT).fill(password);
